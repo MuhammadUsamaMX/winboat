@@ -186,7 +186,9 @@ export class InstallManager {
         // Create password hash file in oemPath
         try {
             const hash = await argon2.hash(this.conf.password);
-            fs.writeFileSync(path.join(oemPath, "auth.hash"), hash, { encoding: "utf8" });
+            const hashPath = path.join(oemPath, "auth.hash");
+            fs.writeFileSync(hashPath, hash, { encoding: "utf8" });
+            fs.chmodSync(hashPath, 0o600); // Set permissions to read/write for owner only
         } catch (error) {
             logger.error(`Failed to create password hash: ${error}`);
             throw error;
